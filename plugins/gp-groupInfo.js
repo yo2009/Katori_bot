@@ -1,40 +1,37 @@
-//import db from '../lib/database.js'
 
 let handler = async (m, { conn, participants, groupMetadata }) => {
     const pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || './src/avatar_contact.png'
-    const { isBanned, welcome, detect, sWelcome, sBye, sPromote, sDemote, antiLink, delete: del } = global.db.data.chats[m.chat]
+    const { isBanned, welcome, detect, sWelcome, sBye, sPromote, sDemote, antiLink, nsfw, captcha, useDocument } = global.db.data.chats[m.chat]
     const groupAdmins = participants.filter(p => p.admin)
     const listAdmin = groupAdmins.map((v, i) => `${i + 1}. @${v.id.split('@')[0]}`).join('\n')
     const owner = groupMetadata.owner || groupAdmins.find(p => p.admin === 'superadmin')?.id || m.chat.split`-`[0] + '@s.whatsapp.net'
     let text = `
-┌──「 *INFO DE GRUPO* 」
+┌──「 *${mssg.gpInfo.toUpperCase()}* 」
 ▢ *♻️ID:*
    • ${groupMetadata.id}
-▢ *🔖Nombre* : 
+▢ *🔖${mssg.name}:* 
 • ${groupMetadata.subject}
-▢ *👥Miembros* :
-• ${participants.length}
-▢ *🤿Dueño de Grupo:*
-• @${owner.split('@')[0]}
-▢ *🕵🏻‍♂️Admins:*
- ${listAdmin}
-▢ *🪢 Configuración de grupo:*
-• ${isBanned ? '✅' : '❎'} Baneado
-• ${welcome ? '✅' : '❎'} Bienvenida
-• ${detect ? '✅' : '❎'} Detector
-• ${del ? '❎' : '✅'} Anti Delete
-• ${antiLink ? '✅' : '❎'} Anti Link WhatsApp
+▢ *👥${mssg.members}:* ${participants.length}
+▢ *🤿${mssg.gpOwner}:*
+• wa.me/${owner.split('@')[0]}
+▢ *🕵🏻‍♂️${mssg.admin}:* ${groupAdmins.length}
 
-*▢  📬 Configuración de mensajes:*
-• Bienvenida: ${sWelcome}
-• Despedida: ${sBye}
-• Promovidos: ${sPromote}
-• Degradados: ${sDemote}
+▢ *🪢 ${mssg.gpConf}:*
+• 📮 *Welcome:* ${welcome ? '✅' : '❎'}
+• ❕ *Detect:* ${detect ? '✅' : '❎'}
+• 🔞 *Nsfw:* ${nsfw ? '✅' : '❎'}
+• 🚨 *Anti Link Wha:* ${antiLink ? '✅' : '❎'}
+• 🧬 *Captcha:* ${captcha ? '✅' : '❎'}
+• 📑 *Document:* ${useDocument ? '✅' : '❎'}
 
-▢ *📌Descripción* :
+*▢  📬 ${mssg.gpConfMsg}:*
+• *Welcome:* ${sWelcome}
+• *Bye:* ${sBye}
+
+▢ *📌${mssg.desc}* :
    • ${groupMetadata.desc?.toString() || 'desconocido'}
 `.trim()
-    conn.sendFile(m.chat, pp, 'pp.jpg', text, m, false, { mentions: [...groupAdmins.map(v => v.id), owner] })
+    conn.sendFile(m.chat, pp, 'pp.jpg', text, m)
 }
 
 handler.help = ['infogp']

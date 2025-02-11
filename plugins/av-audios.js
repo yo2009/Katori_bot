@@ -15,9 +15,9 @@ export default handler
 
 let audioMsg = {
   'fino señores': './src/mp3/fino.mp3',
-  'buenos días': 'https://j.top4top.io/m_26464yyei1.mp3',
-  'buenas tardes': 'https://i.top4top.io/m_2646qxac91.mp3',
-  'buenas noches': 'https://h.top4top.io/m_26460eg6v1.mp3',
-  'sad': 'https://h.top4top.io/m_2474fhcbh1.mp3',
-  '@5492622271736|@59172945992': 'https://l.top4top.io/m_2492i4mdu1.mp3'
+  'buenos días': 'https://k.top4top.io/m_2826iqdri1.mp3',
+  'buenas tardes': 'https://b.top4top.io/m_2826v2zg51.mp3',
+  'buenas noches': 'https://i.top4top.io/m_2826o8rfj1.mp3',
+  'sad': 'https://h.top4top.io/m_2826mcim21.mp3',
+  '@5491168352204|@59172945992': 'https://l.top4top.io/m_2492i4mdu1.mp3'
 }

@@ -1,22 +1,21 @@
 //import db from '../lib/database.js'
-let reg = 40
+let reg = 10
+let maxap = 20000
+let cooldown = 30000
 let handler = async (m, { conn, args, usedPrefix, command }) => {
     let fa = `
-Cuanto quieres apostar? 
-
-📌 Ejemplo :
+📌 ${mssg.example} :
 *${usedPrefix + command}* 100`.trim()
+
     if (!args[0]) throw fa
     if (isNaN(args[0])) throw fa
     let apuesta = parseInt(args[0])
-    let users = global.db.data.users[m.sender]
-    let time = users.lastslot + 10000
-    if (new Date - users.lastslot < 10000) throw `⏳ Espere *${msToTime(time - new Date())}* para usar de nuevo`
-    if (apuesta < 100) throw '✳️ Mínimo de la apuesta es *100 XP*'
-    if (users.exp < apuesta) {
-        throw `✳️ No tienes suficiente *XP*`
-    }
-
+    let user = global.db.data.users[m.sender]
+    if (new Date - user.lastslot < cooldown) throw `⏳ ${mssg.rouletCd} *${msToTime((user.lastslot + cooldown) - new Date())}*`
+    if (apuesta < 100) throw `✳️ ${mssg.betMin} *100 🪙*`
+    if (user.coin < apuesta)throw `✳️ ${mssg.coinNan}`
+   if (maxap < apuesta) return m.reply(`🎰 ${mssg.betMax} *${maxap} 🪙*`) 
+   	
     let emojis = ["🕊️", "🦀", "🦎"];
     let a = Math.floor(Math.random() * emojis.length);
     let b = Math.floor(Math.random() * emojis.length);
@@ -41,16 +40,16 @@ Cuanto quieres apostar?
     }
     let end;
     if (a == b && b == c) {
-        end = `🎁 GANASTE\n *+${apuesta + apuesta} XP*`
-        users.exp += apuesta + apuesta
+        end = `🎁 ${mssg.win}\n *+${apuesta} 🪙*`
+        user.coin += apuesta
     } else if (a == b || a == c || b == c) {
-        end = `🔮 Casi lo logras sigue intentando :) \nTen *+${reg} XP*`
-        users.exp += reg
+        end = `🔮 ${mssg.slotC}\n  *+${reg} 🪙*`
+        user.coin += reg
     } else {
-        end = `😔 Perdiste  *-${apuesta} XP*`
-        users.exp -= apuesta
+        end = `😔 ${mssg.lost}  *-${apuesta} 🪙*`
+        user.coin -= apuesta
     }
-    users.lastslot = new Date * 1
+    user.lastslot = new Date * 1
     return await m.reply(
         `
        🎰 ┃ *SLOTS* 
@@ -66,6 +65,7 @@ ${end}`)
 handler.help = ['slot <apuesta>']
 handler.tags = ['game']
 handler.command = ['slot']
+handler.group = true
 
 export default handler
 
@@ -79,5 +79,5 @@ function msToTime(duration) {
     minutes = (minutes < 10) ? "0" + minutes : minutes
     seconds = (seconds < 10) ? "0" + seconds : seconds
 
-    return seconds + " Segundo(s)"
+    return seconds + ` ${mssg.second}`
 }

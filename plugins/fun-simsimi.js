@@ -1,15 +1,23 @@
-import fetch from 'node-fetch'
 
+import fetch from 'node-fetch'
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-	
- let name = conn.getName(m.sender)
-  if (!text) throw `Hola *${name}* Quieres charlar un rato? \nResponde con *${usedPrefix + command}* (tu mensaje) \n\n📌 Ejemplo : *${usedPrefix + command}* Hola bot`
+
+ let lang = global.db.data.users[m.sender].language
+  if (!text) throw `✳️ ${mssg.notext}`
   m.react('🗣️') 
-  //let res = await fetch(global.API('https://api.simsimi.net', '/v2/', { text: encodeURIComponent(m.text), lc: "es" }, ''))
-  let res = await fetch(`https://api.simsimi.net/v2/?text=${text}&lc=es`)
+  try { 
+  //let res = await fetch(`https://api.simsimi.vn/v2/?text=${text}&lc=${lang}`)
+  let res = await fetch('https://api.simsimi.vn/v1/simtalk', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `text=${encodeURIComponent(text)}&lc=${lang}&key=`
+  })
   let json = await res.json()
-  if (json.success) m.reply(json.success.replace('simsimi', 'DyLux').replace('Simsimi', 'DyLux').replace('sim simi', 'DyLux'))
-  else throw json
+  m.reply(json.message.replace('simsimi', `${botName}`).replace('Simsimi', `${botName}`).replace('sim simi', `${botName}`))
+} catch {
+  m.reply(`❎ Intenta de nuevo mas tarde La api de SimSimi se cayo`)
+}
+
 }
 handler.help = ['bot']
 handler.tags = ['fun']

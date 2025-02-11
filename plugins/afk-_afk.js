@@ -1,12 +1,12 @@
-//import db from '../lib/database.js'
 
 export function before(m) {
     let user = global.db.data.users[m.sender]
     if (user.afk > -1) {
         m.reply(`
-  ✅ Dejaste de estar AFK 
-${user.afkReason ? ' \n▢ *Razón :* ' + user.afkReason : ''}
-▢ *AFK Durante :* ${(new Date - user.afk).toTimeString()}
+${mssg.afkdel} 
+
+▢ *${mssg.name} :* ${this.getName(m.sender)}
+▢ *${mssg.afktime} :* ${(new Date - user.afk).toTimeString()}
   `.trim())
         user.afk = -1
         user.afkReason = ''
@@ -20,12 +20,16 @@ ${user.afkReason ? ' \n▢ *Razón :* ' + user.afkReason : ''}
         if (!afkTime || afkTime < 0)
             continue
         let reason = user.afkReason || ''
-        m.reply(`
-💤 El usuario que mencionas está AFK 
+        
+        let afkt = `
+≡ ${mssg.afktag} 
 
-${reason ? '▢ *Razón* : ' + reason : '▢ *Razón* : Sin razón'}
-▢ *AFK Durante :* ${(new Date - afkTime).toTimeString()}
-  `.trim())
+▢ *${mssg.name} :* ${this.getName(jid)}
+${reason ? `▢ *${mssg.with}* : ${reason}` : ''}
+▢ *${mssg.afktime} :* ${(new Date - afkTime).toTimeString()}`
+
+ m.reply(afkt, null, {mentions: this.parseMention(afkt)})
+ 
     }
     return true
 }

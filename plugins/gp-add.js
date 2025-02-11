@@ -1,6 +1,3 @@
-/*
-recomiendo no usar en wa mod
-*/
 
 import fetch from 'node-fetch'
 /**
@@ -56,5 +53,4 @@ handler.rowner = true
 handler.botAdmin = true
 
 export default handler
-
 

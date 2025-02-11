@@ -1,14 +1,14 @@
-//import db from '../lib/database.js'
 
+let cooldown = 14400000
 let handler = async (m, { conn }) => {
 
-  let hasil = Math.floor(Math.random() * 5000)
-  let time = global.db.data.users[m.sender].lastmiming + 14400000
-  if (new Date - global.db.data.users[m.sender].lastmiming < 14400000) throw `⏳ _Espera_ *${msToTime(time - new Date())}* _para regresar a la mina_`
-  global.db.data.users[m.sender].exp += hasil
+  let hasil = Math.floor(Math.random() * 500)
+  let user = global.db.data.users[m.sender]
+  if (new Date - user.lastmiming < cooldown) throw `⏳ _${mssg.mineCd}_ *${msToTime((user.lastmiming + cooldown) - new Date())}*`
+  user.coin += hasil
   m.reply(`
-🎉 Genial! minaste *${hasil} XP*`)
-  global.db.data.users[m.sender].lastmiming = new Date * 1
+🎉 ${mssg.mine} *${hasil} 🪙*`)
+  user.lastmiming = new Date * 1
 }
 handler.help = ['mine']
 handler.tags = ['econ']
@@ -26,5 +26,5 @@ function msToTime(duration) {
   minutes = (minutes < 10) ? "0" + minutes : minutes
   seconds = (seconds < 10) ? "0" + seconds : seconds
 
-  return hours + " hora(s) " + minutes + " minuto(s) " + seconds + " segundo(s)" 
+  return hours + ` ${mssg.hour} ` + minutes + ` ${mssg.minute}`
 }

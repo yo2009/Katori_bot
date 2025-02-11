@@ -1,10 +1,10 @@
 
-import fg from 'api-dylux'
+import fg from 'senna-fg';
 let handler  = async (m, { conn, args, text, usedPrefix, command }) => {
-  if (!text) throw `✳️ Ingrese la imagen que quiere buscar \n\n📌 Ejemplo: *${usedPrefix + command}* Billie Eilish`
+  if (!text) throw `✳️ ${mssg.example}: *${usedPrefix + command}* Billie Eilish`
   let res = await fg.googleImage(text)
   conn.sendFile(m.chat, res.getRandom(), 'img.png', `
-✅ Resultado de : *${text}*`.trim(), m)
+✅ ${mssg.result}`.trim(), m)
 }
 handler.help = ['imagen']
 handler.tags = ['img']

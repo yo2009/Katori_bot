@@ -3,13 +3,13 @@
 <img src="https://komarev.com/ghpvc/?username=FG98F&color=brightgreen" />
 <p/>
 <p align="center">
-<a href="https://github.com/FG98F"><img title="Author" src="https://img.shields.io/badge/DyLux Bot-black?style=for-the-badge&logo=whatsApp"></a>
+<a href="https://github.com/FG98F"><img title="Author" src="https://img.shields.io/badge/Senna Bot-black?style=for-the-badge&logo=whatsApp"></a>
 <p/>
 <p align="center">
 <a href="https://github.com/FG98F?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/FG98F?label=Followers&style=social"></a>
-<a href="https://github.com/FG98F/dylux-fg/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/FG98F/dylux-fg?&style=social"></a>
-<a href="https://github.com/FG98F/dylux-fg/network/members"><img title="Fork" src="https://img.shields.io/github/forks/FG98F/dylux-fg?style=social"></a>
-<a href="https://github.com/FG98F/dylux-fg/watchers"><img title="Watching" src="https://img.shields.io/github/watchers/FG98F/dylux-fg?label=Watching&style=social"></a>
+<a href="https://github.com/FG98F/senna-bot/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/FG98F/senna-bot?&style=social"></a>
+<a href="https://github.com/FG98F/senna-bot/network/members"><img title="Fork" src="https://img.shields.io/github/forks/FG98F/senna-bot?style=social"></a>
+<a href="https://github.com/FG98F/senna-bot/watchers"><img title="Watching" src="https://img.shields.io/github/watchers/FG98F/senna-bot?label=Watching&style=social"></a>
 </p>
 
 
@@ -18,8 +18,8 @@
 
 ***
 ### Información
-- Cambie número de dueño en [Config](https://github.com/FG98F/dylux-fg/blob/main/config.js#L6)
-- Puede cambiar a la última versión de baileys editando el package.json [esta sección](https://github.com/FG98F/dylux-fg/blob/main/package.json#L42)
+- Cambie número de dueño en [Config](https://github.com/FG98F/senna-bot/blob/main/config.js#L6)
+- Puede cambiar a la última versión de baileys editando el package.json [esta sección](https://github.com/FG98F/senna-bot/blob/main/package.json#L42)
 
 ### FREE APIKEY
 -  [click aquí](https://api.fgmods.xyz)
@@ -29,10 +29,20 @@ En caso de duda, antes de instalar dylux-bot, pruebe el bot aquí
 
 [![WhatsApp](https://img.shields.io/badge/DyLux-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://instabio.cc/fg98ff) 
 
+
+Multi-idioma para cada usuario, lo que significa que el usuario puede elegir el idioma que quiere usar
+
+- [x] Español
+- [x] Indonesia
+- [x] Inglés
+- [x] Portugués
+- [x] Árabe
+- [ ] Idiomas que vendrán después
+
 ***
 
 #### Deploy to Heroku
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/FG98F/dylux-fg)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/FG98F/senna-bot)
 
 #### Heroku Buildpack
 | BuildPack | LINK |
@@ -48,8 +58,8 @@ $ pkg install git -y
 $ pkg install nodejs -y
 $ pkg install ffmpeg -y
 $ pkg install imagemagick -y
-$ git clone https://github.com/FG98F/dylux-fg
-$ cd dylux-fg
+$ git clone https://github.com/FG98F/senna-bot
+$ cd senna-bot
 $ npm i 
 $ npm start
 ```

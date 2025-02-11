@@ -4,28 +4,30 @@ let handler = async (m, { conn, text, args, groupMetadata, usedPrefix, command }
         let who
         if (m.isGroup) who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : false
         else who = m.chat
-        if (!who) throw `✳️ Etiqueta o menciona a alguien\n\n📌 Ejemplo : ${usedPrefix + command} @user`
-        if (!(who in global.db.data.users)) throw `✳️ El usuario no se encuentra en mi base de datos`
+        if (!who) throw `✳️ ${mssg.noMention}\n\n📌 ${mssg.example}: ${usedPrefix + command} @user`
+        if (conn.user.jid.includes(who)) return m.reply(`✳️ Menciona a un usuario que no sea Bot`)
+        if (!(who in global.db.data.users)) throw `✳️ ${mssg.userDb}`
+        let txt = text.replace('@' + who.split`@`[0], '').trim()
         let name = conn.getName(m.sender)
         let warn = global.db.data.users[who].warn
         if (warn < war) {
             global.db.data.users[who].warn += 1
             m.reply(`
-⚠️ *Usuario Advertido* ⚠️
+⚠️ *${mssg.userWarn}* ⚠️
 
-▢ *Admin:* ${name}
-▢ *Usuario:* @${who.split`@`[0]}
-▢ *Warns:* ${warn + 1}/${war}
-▢ *Razon:* ${text}`, null, { mentions: [who] }) 
+▢ *${mssg.admin}:* ${name}
+▢ *${mssg.user}:* @${who.split`@`[0]}
+▢ *${mssg.warns}:* ${warn + 1}/${war}
+▢ *${mssg.with}:* ${txt}`, null, { mentions: [who] }) 
             m.reply(`
-⚠️ *ADVERTENCIA* ⚠️
-Recibiste una advertencia de un admin
+⚠️ *${mssg.warn.toUpperCase()}* ⚠️
+${mssg.warnRec}
 
-▢ *Warns:* ${warn + 1}/${war} 
-Si recibes *${war}* advertencias serás eliminado automáticamente del grupo`, who)
+▢ *${mssg.warns}:* ${warn + 1}/${war} 
+${mssg.wningUser(war)}`, who)
         } else if (warn == war) {
             global.db.data.users[who].warn = 0
-            m.reply(`⛔ El usuario superó las *${war}* advertencias por lo tanto será eliminado`)
+            m.reply(`⛔ ${mssg.warnMaxU(war)}`)
             await time(3000)
             await conn.groupParticipantsUpdate(m.chat, [who], 'remove')
             m.reply(`♻️ Fuiste eliminado del grupo *${groupMetadata.subject}* porque ha sido advertido *${war}* veces`, who)

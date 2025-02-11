@@ -1,48 +1,47 @@
-const items = ['diamond', 'exp']
+const items = ['diamond', 'coin']
 let confirmation = {}
 
 async function handler(m, { conn, args, usedPrefix, command }) {
-    if (confirmation[m.sender]) return m.reply('estas haciendo una transferencia')
+    if (confirmation[m.sender]) return m.reply(mssg.onTransfer)
     let user = global.db.data.users[m.sender]
     const item = items.filter(v => v in user && typeof user[v] == 'number')
-    let lol = `✳️ Uso correcto del comamdo 
-*${usedPrefix + command}*  [tipo] [cantidad] [@user]
+    let lol = `✳️ ${mssg.useCmd}
+*${usedPrefix + command}*  [${mssg.type}] [${mssg.amount}] [@user]
 
-📌 Ejemplo : 
-*${usedPrefix + command}* exp 65 @${m.sender.split('@')[0]}
+📌 ${mssg.example} : 
+*${usedPrefix + command}* coin 65 @${m.sender.split('@')[0]}
 
-📍 Artículos transferibles
+📍 ${mssg.transItem}
 ┌──────────────
-▢ *diamond* = Diamante 💎
-▢ *exp* = Experiencia 🆙
+▢ *diamond* = ${mssg.dmd} 💎
+▢ *coin* = ${mssg.money} 🪙
 └──────────────
 `.trim()
     const type = (args[0] || '').toLowerCase()
     if (!item.includes(type)) return conn.reply(m.chat, lol, m, { mentions: [m.sender] })
     const count = Math.min(Number.MAX_SAFE_INTEGER, Math.max(1, (isNumber(args[1]) ? parseInt(args[1]) : 1))) * 1
+    if (!/^[1-9]\d*$/.test(args[1])) throw `✳️ ${mssg.isNan}`; //-- test
     let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : args[2] ? (args[2].replace(/[@ .+-]/g, '') + '@s.whatsapp.net') : ''
-    if (!who) return m.reply('✳️ Taguea al usuario')
-    if (!(who in global.db.data.users)) return m.reply(`✳️ El Usuario no está en mi base de datos`)
-    if (user[type] * 1 < count) return m.reply(`✳️  *${type}*  insuficiente para transferir`)
+    if (!who) return m.reply(`✳️ ${mssg.noMention}`)
+    if (!(who in global.db.data.users)) return m.reply(`✳️ ${mssg.userDb}`)
+    if (user[type] * 1 < count) return m.reply(`✳️  *${type}* ${mssg.payNan}`)
     let confirm = `
-¿Está seguro de que desea transferir *${count}* _*${type}*_ a  *@${(who || '').replace(/@s\.whatsapp\.net/g, '')}* ? 
+¿${mssg.confirm} *${count}* _*${type}*_ ${mssg.to}  *@${(who || '').replace(/@s\.whatsapp\.net/g, '')}* ? 
 
-- Tienes  *60s* 
-_responde *si* o *no*_
+- Escribe *si* o *no*
 `.trim()
    
-    //conn.sendButton(m.chat, confirm, fgig, null, [['si'], ['no']], m, { mentions: [who] })
-    m.reply(confirm, null, { mentions: [who] })
+    conn.reply(m.chat, confirm, m, { mentions: [who] })
     confirmation[m.sender] = {
         sender: m.sender,
         to: who,
         message: m,
         type,
         count,
-        timeout: setTimeout(() => (m.reply('⏳ Se acabó el tiempo'), delete confirmation[m.sender]), 60 * 1000)
+        timeout: setTimeout(() => (m.reply(`⏳ ${mssg.payCd}`), delete confirmation[m.sender]), 60 * 1000)
     }
 }
-
+//--
 handler.before = async m => {
     if (m.isBaileys) return
     if (!(m.sender in confirmation)) return
@@ -54,18 +53,18 @@ handler.before = async m => {
     if (/no?/g.test(m.text.toLowerCase())) {
         clearTimeout(timeout)
         delete confirmation[sender]
-        return m.reply('✅ Transferencia Cancelado')
+        return m.reply(`✅ ${mssg.cancelPay}`)
     }
     if (/si?/g.test(m.text.toLowerCase())) {
         let previous = user[type] * 1
         let _previous = _user[type] * 1
         user[type] -= count * 1
         _user[type] += count * 1
-        if (previous > user[type] * 1 && _previous < _user[type] * 1) m.reply(`✅ Se realizo la transferencia de \n\n*${count}* *${type}*  a @${(to || '').replace(/@s\.whatsapp\.net/g, '')}`, null, { mentions: [to] })
+        if (previous > user[type] * 1 && _previous < _user[type] * 1) m.reply(`✅ ${mssg.pay} \n\n*${count}* *${type}* ${mssg.to} @${(to || '').replace(/@s\.whatsapp\.net/g, '')}`, null, { mentions: [to] })
         else {
             user[type] = previous
             _user[type] = _previous
-            m.reply(`❎ Error al transferir *${count}* ${type} a *@${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, null, { mentions: [to] })
+            m.reply(`❎ ${mssg.payError} *${count}* ${type} ${mssg.to} *@${(to || '').replace(/@s\.whatsapp\.net/g, '')}*`, null, { mentions: [to] })
         }
         clearTimeout(timeout)
         delete confirmation[sender]
@@ -74,9 +73,7 @@ handler.before = async m => {
 
 handler.help = ['transfer'].map(v => v + ' [tipo] [monto] [@tag]')
 handler.tags = ['econ']
-handler.command = ['payxp','paydi', 'transfer', 'darxp','dardi',]
-
-handler.disabled = false
+handler.command = ['payxp','paydi', 'transfer', 'darxp','dardi', 'pay']
 
 export default handler
 

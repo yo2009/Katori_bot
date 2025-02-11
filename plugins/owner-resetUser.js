@@ -31,9 +31,9 @@ let handler = async (m, { conn, text }) => {
     }
     
 }
-handler.help = ['reset']
+handler.help = ['reset-user']
 handler.tags = ['owner']
-handler.command = ['reset'] 
+handler.command = ['reset-user', 'resetuser'] 
 handler.rowner = true
 
 export default handler

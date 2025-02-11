@@ -10,12 +10,12 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
       }) * 1000
     }
     let muptime = clockString(_muptime)
-   m.reply(`🏮 *Bot activo durante*  \n\n${muptime}`) 
+   m.reply(`🏮 *${mssg.uptime}*  \n\n${muptime}`) 
 }
-handler.help = ['runtime']
+handler.help = ['runtime'] 
 handler.tags = ['main']
 handler.command = ['runtime', 'uptime']
-export default handler
+export default handler 
 
 function clockString(ms) {
   let d = isNaN(ms) ? '--' : Math.floor(ms / 86400000)

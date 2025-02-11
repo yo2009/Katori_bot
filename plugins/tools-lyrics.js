@@ -1,15 +1,15 @@
 
-import fg from 'api-dylux'
+import fg from 'senna-fg'
 let handler = async (m, {conn, text }) => {
   let teks = text ? text : m.quoted && m.quoted.text ? m.quoted.text : ''
-   if (!teks) throw `✳️ Ingresa el título de una canción`
+   if (!teks) throw `✳️ ${mssg.notext}`
    try {
  let res = await fg.lyrics(text);
  let mes = `▢ *${res.title}*
 ▢ *${res.artist}*
 
 ▢ ${res.lyrics}`;
-    conn.sendFile(m.chat, res.thumb, 'img.png', mes, m);
+    conn.sendFile(m.chat, res.image, 'img.png', mes, m);
 } catch (e) {
 	m.react(error)
 } 

@@ -1,13 +1,12 @@
 
-let handler = async (m, { conn, participants, usedPrefix, command }) => {
+let handler = async (m, { conn, usedPrefix, command }) => {
 	
-let kickte = `✳️ Uso correcto del comamdo\n*${usedPrefix + command}* @tag`
-
-if (!m.mentionedJid[0] && !m.quoted) return m.reply(kickte, m.chat, { mentions: conn.parseMention(kickte)}) 
+if (!m.mentionedJid[0] && !m.quoted) return m.reply(`✳️ ${mssg.useCmd}\n\n*${usedPrefix + command}* @tag`) 
 let user = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted.sender
-let owr = m.chat.split`-`[0]
+if (conn.user.jid.includes(user)) return m.reply(`✳️ No puedo hacer un auto kick`)
+
 await conn.groupParticipantsUpdate(m.chat, [user], 'remove')
-m.reply(`✅ Usuario eliminado`) 
+m.reply(`✅ ${mssg.kick}`) 
 
 }
 

@@ -11,7 +11,8 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
     if (now < global.db.data.chats[who].expired) global.db.data.chats[who].expired += nDays
     else global.db.data.chats[who].expired = now + nDays
     let teks = `✅ Se estableció los días de vencimiento para \n*${await conn.getName(who)}* \n\n*Durante:* ${args[0]} Días\n\n*Cuenta regresiva :* ${msToDate(global.db.data.chats[who].expired - now)}`
-    conn.reply(m.chat, teks, m)
+    //conn.sendButton(m.chat, teks, mssg.ig, null, [['Del Expired', `${usedPrefix}delexpired`], ['Check Expired', `${usedPrefix}checkexpired`]], m)
+    m.reply(teks)
 }
 handler.help = ['expired <días>']
 handler.tags = ['owner']
@@ -24,5 +25,5 @@ function msToDate(ms) {
   let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000) % 24
   let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
   let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
-  return [d, ' *Días*\n ', h, ' *Horas*\n ', m, ' *Minutos*\n ', s, ' *Segundos* '].map(v => v.toString().padStart(2, 0)).join('')
+  return [d, 'd ', h, 'h ', m, 'm ', s, 's '].map(v => v.toString().padStart(2, 0)).join('')
 }

@@ -6,6 +6,7 @@ import { xpRange } from '../lib/levelling.js'
 //import { plugins } from '../lib/plugins.js'
 let tags = {
   'main': 'ACERCA DE',
+  'bebot': 'SUB BOTS',
   'game': 'JUEGOS',
   'econ': 'NIVEL & ECONOMIA',
   'rg': 'REGISTRO',
@@ -21,30 +22,27 @@ let tags = {
   'tools': 'TOOLS',
   'fun': 'FUN',
   'cmd': 'DATABASE',
-  'nsfw': 'NSFW +18', 
-  'ansfw': 'NSFW ANIME',
+  'nsfw': 'NSFW +18',
+  'ansfw': 'NSFW ANIME', 
   'owner': 'OWNER', 
   'advanced': 'AVANZADO',
 }
 const defaultMenu = {
   before: `
-◈ ━━━━━ *DyLux  ┃ ᴮᴼᵀ* ━━━━━ ◈
+◈ ━━━━━ *DyLux ┃ ˢᵉⁿⁿᵃ* ━━━━━ ◈
  
-👋🏻 _Hola_ *%name*
-🧿 Nivel : *%level* 
+👋🏻 Hola! *%name*
 👥 Usuarios : %totalreg
-📈 Tiempo activo : %muptime
-─────────────
-▢ Crea tu propio bot 
-• https://youtu.be/xFqjKN1Qt80
-▢ Descarga *FGWhatsApp*
-• https://fgmods.xyz
-─────────────
+🟢 Tiempo activo : %muptime
+%sbot
+▢ ADD
+• https://instagram.com/fg98_ff
+────────────
 %readmore
+  ≡ *LISTA DE MENUS*
+
 Ⓟ = Premium
 ⓓ = Diamantes
------  -----  -----  -----  -----
-  ≡ *LISTA DE MENUS*
 `.trimStart(),
   header: '┌─⊷ *%category*',
   body: '▢ %cmd %isdiamond %isPremium',
@@ -113,7 +111,7 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
     let header = conn.menu.header || defaultMenu.header
     let body = conn.menu.body || defaultMenu.body
     let footer = conn.menu.footer || defaultMenu.footer
-    let after = conn.menu.after || (conn.user.jid == conn.user.jid ? '' : `Powered by https://wa.me/${conn.user.jid.split`@`[0]}`) + defaultMenu.after
+    let after = conn.menu.after || (conn.user.jid == conn.user.jid ? '' : `⭐ Powered by FG98 https://wa.me/${conn.user.jid.split`@`[0]}`) + defaultMenu.after
     let _text = [
       before,
       ...Object.keys(tags).map(tag => {
@@ -136,6 +134,7 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
       '%': '%',
       p: _p, uptime, muptime,
       me: conn.getName(conn.user.jid),
+      sbot: (conn.user.jid == global.conn.user.jid ? '' : `\n▢ ✨ *Sub-Bot de:*\nwa.me/${global.conn.user.jid.split`@`[0]}`), 
       npmname: _package.name,
       npmdesc: _package.description,
       version: _package.version,
@@ -150,13 +149,13 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
     text = text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, 'g'), (_, name) => '' + replace[name])
     
     let pp = './src/fg_logo.jpg'
-     
-    conn.sendFile(m.chat, pp, 'menu.jpg', text.trim(), m, null, rpl)
-    /*conn.sendButton(m.chat, text.trim(), '▢ DyLux  ┃ ᴮᴼᵀ\n▢ Sígueme en Instagram\nhttps://www.instagram.com/fg98_ff', pp, [
+
+    /*conn.sendButton(m.chat, text.trim(), `▢ DyLux  ┃ ᴮᴼᵀ\n${mssg.ig}`, pp, [
       ['ꨄ︎ Apoyar', `${_p}donate`],
       ['⏍ Info', `${_p}botinfo`],
       ['⌬ Grupos', `${_p}gpdylux`]
-    ],m, rpl)*/
+    ], m, rpl)*/
+    conn.sendFile(m.chat, pp, 'menu.jpg', text.trim(), m, null, rcanal)
   
     m.react('📚') 
     
@@ -165,12 +164,10 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
     throw e
   }
 }
-handler.help = ['help']
-handler.tags = ['main']
+//handler.help = ['help']
+//handler.tags = ['main']
 handler.command = ['menu', 'help', 'menú'] 
 handler.register = false
-
-handler.exp = 3
 
 export default handler
 

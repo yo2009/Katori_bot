@@ -1,4 +1,4 @@
- 
+
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 import './config.js'; 
 import { createRequire } from "module"; // Bring in the ability to create the 'require' method
@@ -19,11 +19,20 @@ import { Low, JSONFile } from 'lowdb';
 import pino from 'pino';
 import { mongoDB, mongoDBV2 } from './lib/mongoDB.js';
 import store from './lib/store.js'
-import {
+import { Boom } from '@hapi/boom'
+const {
     useMultiFileAuthState,
     DisconnectReason,
-    fetchLatestBaileysVersion 
-   } from '@whiskeysockets/baileys'
+    fetchLatestBaileysVersion, 
+    MessageRetryMap,
+    makeCacheableSignalKeyStore, 
+    jidNormalizedUser,
+    PHONENUMBER_MCC
+   } = await import('@whiskeysockets/baileys')
+import moment from 'moment-timezone'
+import NodeCache from 'node-cache'
+import readline from 'readline'
+import fs from 'fs'
 const { CONNECTING } = ws
 const { chain } = lodash
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3000
@@ -44,7 +53,7 @@ const __dirname = global.__dirname(import.meta.url)
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
 global.prefix = new RegExp('^[' + (opts['prefix'] || '‎z/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.,\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
 
-// global.opts['db'] = process.env['db']
+//global.opts['db'] = "mongodb+srv://dbdyluxbot:password@cluster0.xwbxda5.mongodb.net/?retryWrites=true&w=majority"
 
 global.db = new Low(
   /https?:\/\//.test(opts['db'] || '') ?
@@ -80,46 +89,104 @@ global.loadDatabase = async function loadDatabase() {
 loadDatabase()
 
 //-- SESSION
-global.authFolder = `sessions`
-const { state, saveCreds } = await useMultiFileAuthState(global.authFolder)
-let { version, isLatest } = await fetchLatestBaileysVersion() 
-/*const connectionOptions = {
-  printQRInTerminal: true,
-  auth: state,
-  logger: pino({ level: 'silent'}),
-  browser: ['dylux-bot','Safari','1.0.0']
-}*/ 
-const connectionOptions = {
-	    version,
-        printQRInTerminal: true,
-        auth: state,
-        browser: ['dylux-bot', 'Safari', '3.1.0'], 
-	      patchMessageBeforeSending: (message) => {
-                const requiresPatch = !!(
-                    message.buttonsMessage 
-                    || message.templateMessage
-                    || message.listMessage
-                );
-                if (requiresPatch) {
-                    message = {
-                        viewOnceMessage: {
-                            message: {
-                                messageContextInfo: {
-                                    deviceListMetadataVersion: 2,
-                                    deviceListMetadata: {},
-                                },
-                                ...message,
-                            },
-                        },
-                    };
-                }
+global.authFile = `sessions`
+const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile)
+//const msgRetryCounterMap = (MessageRetryMap) => { }
+const msgRetryCounterMap = new Map()
+const msgRetryCounterCache = new NodeCache({ stdTTL: 0, checkperiod: 0 })
+const userDevicesCache = new NodeCache({ stdTTL: 0, checkperiod: 0 })
+//const msgRetryCounterCache = new NodeCache()
+const {version} = await fetchLatestBaileysVersion()
+let phoneNumber = global.botNumber[0]
 
-                return message;
-            }, 
-      logger: pino({ level: 'silent' })
-} 
-//--
+const methodCodeQR = process.argv.includes("qr")
+const methodCode = !!phoneNumber || process.argv.includes("code")
+const MethodMobile = process.argv.includes("mobile")
+
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+const question = (texto) => new Promise((resolver) => rl.question(texto, resolver))
+
+let opcion
+if (methodCodeQR) {
+opcion = '1'
+}
+if (!methodCodeQR && !methodCode && !fs.existsSync(`./${authFile}/creds.json`)) {
+do {
+opcion = await question('\n\n\n✳️ Ingrese el metodo de conexion\n\n\n🔺 1 : por código  QR\n🔺 2 : por CÓDIGO de 8 dígitos\n\n\n\n')
+if (!/^[1-2]$/.test(opcion)) {
+console.log('\n\n🔴 Ingrese solo una opción \n\n 1 o 2\n\n')
+}} while (opcion !== '1' && opcion !== '2' || fs.existsSync(`./${authFile}/creds.json`))
+}
+
+console.info = () => {} 
+
+const connectionOptions = {
+    logger: pino({ level: 'silent' }),
+    printQRInTerminal: opcion === '1' || methodCodeQR,
+    mobile: MethodMobile,
+    browser: opcion === '1' ? ['Senna', 'Safari', '2.0.0'] : methodCodeQR ? ['Senna', 'Safari', '2.0.0'] : ['Ubuntu', 'Chrome', '20.0.04'],
+    auth: {
+        creds: state.creds,
+        keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'fatal' }).child({ level: 'fatal' })),
+    },
+    waWebSocketUrl: 'wss://web.whatsapp.com/ws/chat?ED=CAIICA',
+    markOnlineOnConnect: true,
+    generateHighQualityLinkPreview: true,
+    getMessage: async (key) => {
+        let jid = jidNormalizedUser(key.remoteJid);
+        let msg = await store.loadMessage(jid, key.id);
+        return msg?.message || "";
+    },
+    patchMessageBeforeSending: async (message) => {
+        let messages = 0;
+        global.conn.uploadPreKeysToServerIfRequired();
+        messages++;
+        return message;
+    },
+    msgRetryCounterCache: msgRetryCounterCache,
+    userDevicesCache: userDevicesCache,
+    //msgRetryCounterMap,
+    defaultQueryTimeoutMs: undefined,
+    cachedGroupMetadata: (jid) => global.conn.chats[jid] ?? {},
+    version: [2, 3000, 1015901307],
+    //userDeviceCache: msgRetryCounterCache <=== quien fue el pendejo?????
+};
+
 global.conn = makeWASocket(connectionOptions)
+
+if (!fs.existsSync(`./${authFile}/creds.json`)) {
+if (opcion === '2' || methodCode) {
+opcion = '2'
+if (!conn.authState.creds.registered) {  
+if (MethodMobile) throw new Error('⚠️ Se produjo un Error en la API de movil')
+
+let addNumber
+if (!!phoneNumber) {
+addNumber = phoneNumber.replace(/[^0-9]/g, '')
+if (!Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
+console.log(chalk.bgBlack(chalk.bold.redBright("\n\n✴️ Su número debe comenzar  con el codigo de pais")))
+process.exit(0)
+}} else {
+while (true) {
+addNumber = await question(chalk.bgBlack(chalk.bold.greenBright("\n\n✳️ Escriba su numero\n\nEjemplo: 5491168xxxx\n\n")))
+addNumber = addNumber.replace(/[^0-9]/g, '')
+
+if (addNumber.match(/^\d+$/) && Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
+break 
+} else {
+console.log(chalk.bgBlack(chalk.bold.redBright("\n\n✴️ Asegúrese de agregar el código de país")))
+}}
+rl.close()  
+} 
+
+        setTimeout(async () => {
+            let codeBot = await conn.requestPairingCode(addNumber)
+            codeBot = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot
+            console.log(chalk.yellow('\n\n🍏 introduce el código en WhatsApp.'))
+            console.log(chalk.black(chalk.bgGreen(`\n🟣  Su Código es: `)), chalk.black(chalk.red(codeBot)))
+        }, 3000)
+}}
+}
 conn.isInit = false
 
 if (!opts['test']) {
@@ -143,27 +210,28 @@ async function clearTmp() {
   //---
   return filename.map(file => {
     const stats = statSync(file)
-    if (stats.isFile() && (Date.now() - stats.mtimeMs >= 1000 * 60 * 3)) return unlinkSync(file) // 3 minuto
+    if (stats.isFile() && (Date.now() - stats.mtimeMs >= 1000 * 60 * 1)) return unlinkSync(file) // 1 minuto
     return false
   })
 }
+
 setInterval(async () => {
-	var a = await clearTmp()
-	console.log(chalk.cyan(`✅  Auto clear  | Se limpio la carpeta tmp`))
-}, 180000) //3 muntos
+	await clearTmp()
+	//console.log(chalk.cyan(`✅  Auto clear  | Se limpio la carpeta tmp`))
+}, 60000) //1 munto
 
 async function connectionUpdate(update) {
-  const {connection, lastDisconnect, isNewLogin} = update;
-  if (isNewLogin) conn.isInit = true;
-  const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode;
+  const { connection, lastDisconnect, isNewLogin } = update
+  if (isNewLogin) conn.isInit = true
+  const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
   if (code && code !== DisconnectReason.loggedOut && conn?.ws.socket == null) {
-    console.log(await global.reloadHandler(true).catch(console.error));
-    global.timestamp.connect = new Date;
+    console.log(await global.reloadHandler(true).catch(console.error))
+    global.timestamp.connect = new Date
   }
   
   if (global.db.data == null) loadDatabase()
-}
 
+} //-- cu 
 
 process.on('uncaughtException', console.error)
 // let strQuot = /(["'])(?:(?=(\\?))\2.)*?\1/

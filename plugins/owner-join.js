@@ -1,8 +1,6 @@
 
 let handler = async (m, { conn, text, usedPrefix, command, args, participants, isOwner }) => {
 	
-   if (!isOwner) return conn.reply(m.chat, `*Invitar bot a un grupo*\n\nHola @${m.sender.split('@')[0]}\npuedes alquilar el bot para que se una a un grupo`.trim(), m, { mentions: [m.sender] })
-	
   let time = global.db.data.users[m.sender].lastjoin + 86400000
   let linkRegex = /chat.whatsapp.com\/([0-9A-Za-z]{20,24})/i
   let delay = time => new Promise(res => setTimeout(res, time))
@@ -40,14 +38,15 @@ fui invitado por *${m.name}*`, m, {
      await conn.reply(global.owner[1]+'@s.whatsapp.net', `≡ *INVITACIÓN A GRUPO*\n\n@${m.sender.split('@')[0]} ha invitado a *${conn.user.name}* al grupo\n\n*${await conn.getName(res)}*\n\n*ID* : ${res}\n\n📌 Enlace : ${args[0]}\n\nEl bot saldrá automáticamente después de \n\n${msToDate(global.db.data.chats[res].expired - now)}`, null, {mentions: [m.sender]})
      })
      if (!e.length) await conn.reply(global.owner[1]+'@s.whatsapp.net', `≡ *INVITACIÓN A GRUPO*\n\n@${m.sender.split('@')[0]} ha invitado a *${conn.user.name}* al grupo\n\n*${await conn.getName(res)}*\n\n*ID* : ${res}\n\n📌 Enlace : ${args[0]}\n\nEl bot saldrá automáticamente después de\n\n ${msToDate(global.db.data.chats[res].expired - now)}`, null, {mentions: [m.sender]})
-     if (!e.length) await m.reply(`✳️ Invitar con éxito al bot al grupo\n\n${await conn.getName(res)}\n\nEl bot saldrá automáticamente después de *${msToDate(global.db.data.chats[res].expired - now)}*`).then(async () => {
+     if (!e.length) await m.reply(`✅ Se invito al bot al grupo\n\n${await conn.getName(res)}\n\nEl bot saldrá automáticamente después de \n${msToDate(global.db.data.chats[res].expired - now)}`).then(async () => {
      let mes = `Hola a todos 👋🏻
      
 *${conn.user.name}* es uno de los bots multidispositivo de WhatsApp construido con Node.js, *${conn.user.name}* Recién invitado por *${m.name}*
 
 para ver el Menu del bot escribe
 
-${usedPrefix}help
+*${usedPrefix}help*
+
 @${conn.user.jid.split('@')[0]} saldrá automáticamente después de \n\n${msToDate(global.db.data.chats[res].expired - now)}`
   await conn.reply(res, mes, m, {
         mentions: d
@@ -62,7 +61,7 @@ handler.help = ['join <chat.whatsapp.com> <dias>']
 handler.tags = ['owner']
 handler.command = ['join', 'invite'] 
 
-//handler.owner = true
+handler.owner = true
 
 export default handler
 
@@ -71,5 +70,5 @@ function msToDate(ms) {
   let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000) % 24
   let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
   let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
-  return [d, ' *Días*\n ', h, ' *Horas*\n ', m, ' *Minutos*\n ', s, ' *Segundos* '].map(v => v.toString().padStart(2, 0)).join('')
+  return [d, 'd ', h, 'h ', m, 'm ', s, 's '].map(v => v.toString().padStart(2, 0)).join('')
 }

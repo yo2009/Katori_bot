@@ -1,17 +1,19 @@
-//import db from '../lib/database.js'
 
 let handler = async (m, { text, conn }) => {
     let user = global.db.data.users[m.sender]
+    if (text.length >= 90) throw `✳️ ${mssg.afktemx}`
     user.afk = + new Date
     user.afkReason = text
     m.reply(`
-  😴 *AFK* 
-Ahora estas afk hasta que envies un mensaje 
-▢ *Usuario:* ${conn.getName(m.sender)} 
-▢ *Razon:* ${text ? text : ''}
-  `)
+≡ *${mssg.afkdone}*
+
+▢ *${mssg.name}:* ${conn.getName(m.sender)} 
+▢ *${mssg.with}:* ${text ? text : ''}
+
+_${mssg.afkmsg}_
+  `, null, {mentions: conn.parseMention(text)})
 }
-handler.help = ['afk <razon>']
+handler.help = ['afk']
 handler.tags = ['fun']
 handler.command = ['afk']
 handler.group = true

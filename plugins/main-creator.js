@@ -1,10 +1,17 @@
 
 function handler(m) {
-  const data = global.owner.filter(([id, isCreator]) => id && isCreator)
-  this.sendContact(m.chat, data.map(([id, name]) => [id, name]), m)
+   let data = global.owner.filter(([id, isCreator]) => id && isCreator);
 
+    let numberowner = data[0]?.[0] || ''
+    let gmail = "fg98ff@gmail.com"
+    let instagram = fgig
+    let onum = 'Número del creador'
+
+    const contacts = data.map(([id, name]) => [id, name, numberowner, gmail, instagram, onum])
+
+    this.sendContact(m.chat, contacts, m)
+    
 }
-
 handler.help = ['owner']
 handler.tags = ['main']
 handler.command = ['owner', 'creator', 'creador', 'dueño', 'fgowner'] 

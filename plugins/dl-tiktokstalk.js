@@ -1,24 +1,27 @@
 
-import fg from 'api-dylux'
+import fetch from 'node-fetch'
 let handler = async (m, { conn, text, args }) => {
 	
-  if (!text) throw `✳️ Ingrese el Username de un usuario de TikTok`
-try {
-  let res = await fg.ttStalk(args[0])
+  if (!text) throw `✳️ ${mssg.noUsername}`
+  
+  try {  	
+  let pon = await fetch(global.API('fgmods', '/api/search/ttstalk', { username: args[0] }, 'apikey'))
+    let res = await pon.json()
+    
   let txt = `
 ┌──「 *TIKTOK STALK* 
-▢ *🔖Nombre:* ${res.name}
-▢ *🔖Username:* ${res.username}
-▢ *👥Seguidores:* ${res.followers}
-▢ *🫂Siguiendo:* ${res.following}
-▢ *📌Desc:* ${res.desc}
-
-▢ *🔗 Link* : https://tiktok.com/${res.username}
+▢ *🔖${mssg.name}:* ${res.result.username}
+▢ *🔖${mssg.username}:* ${args[0]}
+▢ *👥${mssg.followers}:* ${res.result.followers}
+▢ *🫂${mssg.follows}:* ${res.result.following}
+▢ *📌${mssg.desc}:* ${res.result.description}
+▢ *🔗${mssg.link}:* https://tiktok.com/@${args[0]}
 └────────────`
-  await conn.sendFile(m.chat, res.profile, 'tt.png', txt, m)
+  await conn.sendFile(m.chat, res.result.profile, 'tt.png', txt, m)
 } catch {
-    m.reply(`✳️ Revisa que el nombre de usuario sea de TikTok`)
+  m.reply(`✳️ ${mssg.error}`)
 }
+
 }
 handler.help = ['tiktokstalk']
 handler.tags = ['dl']

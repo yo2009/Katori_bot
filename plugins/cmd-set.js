@@ -1,9 +1,8 @@
-//import db from '../lib/database.js'
 
 let handler = async (m, { text, usedPrefix, command }) => {
     global.db.data.sticker = global.db.data.sticker || {}
-    if (!m.quoted) throw `✳️Responde a un mensaje con *${usedPrefix + command}*`
-    if (!m.quoted.fileSha256) throw '⚠️ Menciona al mensaje'
+    if (!m.quoted) throw `✳️ ${mssg.reply}`
+    if (!m.quoted.fileSha256) throw `⚠️ ${mssg.reply}`
     if (!text) throw `✳️ Falta el comando`
     let sticker = global.db.data.sticker
     let hash = m.quoted.fileSha256.toString('base64')
@@ -15,13 +14,13 @@ let handler = async (m, { text, usedPrefix, command }) => {
         at: + new Date,
         locked: false,
     }
-    m.reply(`✅ Comando guardado`)
+    m.reply(`✅ ${mssg.cmdSave}`)
 }
 
 
-handler.help = ['cmd'].map(v => 'set' + v + ' <txt>')
+handler.help = ['setcmd <text>']
 handler.tags = ['cmd']
 handler.command = ['setcmd']
-handler.owner = true
+handler.rowner = true
 
 export default handler

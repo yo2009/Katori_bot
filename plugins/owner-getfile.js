@@ -10,21 +10,21 @@ let handler = async (m, { conn, isROwner, usedPrefix, command, text }) => {
   
   if (!text) {
     throw `
-✳️ Uso del comando : ${usedPrefix + command} <name file>
+✳️ ${mssg.useCmd}  : ${usedPrefix + command} <name file>
       
-📌 Ejemplo:
+📌 ${mssg.example}:
 ${usedPrefix + command} main-menu
 `.trim();
   }
 
   if (!pluginNames.includes(text)) {
     return m.reply(`
-📌 *Ejemplo:* 
- ${usedPrefix + command} main-menu 
+📌 *${mssg.example}:* 
+${usedPrefix + command} main-menu 
       
       ≡ *Lista de Plugins*
 ┌─⊷
- ${pluginNames.map(name => `▢ ${name}`).join('\n')}
+${pluginNames.map(name => `▢ ${name}`).join('\n')}
 └───────────
     `);
   }

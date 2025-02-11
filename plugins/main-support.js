@@ -1,24 +1,21 @@
-
+ 
 let handler = async (m, { conn }) => {
 
 m.reply(`
-≡  *DyLuxᴮᴼᵀ ┃ SUPPORT*
+≡  *${botName}ᴮᴼᵀ ┃ SUPPORT*
 
 ◈ ━━━━━━━━━━━━━━━━━━━━ ◈
+▢ Canal
+${fgcanal}
+
 ▢ Grupo *1*
-${dygp}
+${bgp}
 
 ▢ Grupo *2*
-https://chat.whatsapp.com/I7bvd8XCAOUHjgkHteqFC7
+${bgp2}
 
 ▢ Grupo *NSFW* 🔞
-https://chat.whatsapp.com/F0JTTyZ3hsoL7OlU8TEpuH
-
-▢ 𝐌𝐘 - 𝐌𝐚𝐲𝐥𝐮𝐱 | ᴮᴼᵀ⚡
-https://chat.whatsapp.com/CTILZXSriIE3M40anVyPT4
-
-▢ 📲💻ANDROID WORLD🎬🎮
-https://chat.whatsapp.com/Ly4I2LObSvW8VgOnJjofgA
+${bgp3}
 
 ◈ ━━━━━━━━━━━━━━━━━━━━ ◈
 ▢ Todos los Grupos
@@ -34,6 +31,6 @@ https://chat.whatsapp.com/Ly4I2LObSvW8VgOnJjofgA
 }
 handler.help = ['support']
 handler.tags = ['main']
-handler.command = ['grupos', 'groupdylux', 'dxgp', 'dygp', 'gpdylux', 'support'] 
+handler.command = ['grupos', 'groups', 'support'] 
 
 export default handler

@@ -1,35 +1,5 @@
-//import db from '../lib/database.js'
-
+ 
 let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isROwner }) => {
-	
-const sections = [
-   {
-	title: `≡ Lista de Opciones`,
-	rows: [
-	{title: "🔮 | Welcome", rowId: `${usedPrefix + command} welcome`},
-	{title: "🌎 | Public", rowId: `${usedPrefix + command} public`},
-	{title: "🔞 | Nsfw", rowId: `${usedPrefix + command} nsfw`},
-	{title: "🧬 | OnlyLatinos", rowId: `${usedPrefix + command} onlylatinos`},
-	{title: "🔗 | Antilink", rowId: `${usedPrefix + command} antilink`},
-    {title: "🚫 | Antidelete", rowId: `${usedPrefix + command} antidelete`},
-	{title: "⏏️ | Autolevelup", rowId: `${usedPrefix + command} autolevelup`},
-	{title: "🗣️ | ChatBot", rowId: `${usedPrefix + command} chatbot`},
-	{title: "🔎 | Detect", rowId: `${usedPrefix + command} detect`},
-	{title: "📑 | Document", rowId: `${usedPrefix + command} document`},
-	{title: "🛡️ | Restrict", rowId: `${usedPrefix + command} restrict`},
-	{title: "💬 | OnlyPv", rowId: `${usedPrefix + command} onlydm`},
-	{title: "👥 | OnlyGp", rowId: `${usedPrefix + command} onlygp`}
-	]
-    },
-]
-
-const listMessage = {
-  text: '\nAquí tiene una lista de lo que puede activar y desactivar',
-  footer: fgig,
-  title: `≡ Lista de Opciones`,
-  buttonText: "Click Aquí",
-  sections
-}
 
   let isEnable = /true|enable|(turn)?on|1/i.test(command)
   let chat = global.db.data.chats[m.chat]
@@ -106,19 +76,24 @@ const listMessage = {
       chat.antiLink = isEnable
       break
       
-      case 'sololatinos':
-      case 'sololatino':
-      case 'onlylatinos':
-      case 'onlylat':
-      case 'onlylatan':
-      case 'sololatan':
+      
+      case 'captcha':
       if (m.isGroup) {
         if (!(isAdmin || isOwner)) {
           global.dfail('admin', m, conn)
           throw false
         }
       }
-      chat.onlyLatinos = isEnable
+      chat.captcha = isEnable
+      break
+      case 'antibotclone':
+      if (m.isGroup) {
+        if (!(isAdmin || isOwner)) {
+          global.dfail('admin', m, conn)
+          throw false
+        }
+      }
+      chat.antiBotClone = isEnable
       break
       
       case 'nsfw':
@@ -158,11 +133,12 @@ const listMessage = {
     case 'onlymd':
     case 'solopv':
       isAll = true
-      if (!isROwner) {
-        global.dfail('rowner', m, conn)
+      if (!isOwner) {
+        global.dfail('owner', m, conn)
         throw false
       }
-      global.opts['pconly'] = isEnable
+      //global.opts['solopv'] = isEnable
+      bot.solopv = isEnable
       break
       
     case 'gponly':
@@ -171,30 +147,33 @@ const listMessage = {
     case 'sologp':
     case 'sologrupo':
       isAll = true
-      if (!isROwner) {
-        global.dfail('rowner', m, conn)
+      if (!isOwner) {
+        global.dfail('owner', m, conn)
         throw false
       }
-      global.opts['gconly'] = isEnable
+      //global.opts['sologp'] = isEnable
+      bot.sologp = isEnable
       break
       
     default:
+      //if (!/[01]/.test(command)) return await conn.sendMessage(m.chat, listMessage, { quoted: m })
       if (!/[01]/.test(command)) return m.reply(`
 ≡ Lista de Opciones
 
 ┌─⊷ *ADMIN*
+▢ captcha
 ▢ welcome
 ▢ antilink
 ▢ detect 
 ▢ document
 ▢ nsfw
-▢ onlylatinos
 └───────────── 
 ┌─⊷ *USERS*
 ▢ autolevelup
 ▢ chatbot 
 └─────────────
 ┌─⊷ *OWNER*
+▢ antibotclone
 ▢ public
 ▢ solopv
 ▢ sologp
@@ -207,7 +186,7 @@ const listMessage = {
 }
 
 m.reply(`
-✅ *${type}* Se *${isEnable ? 'Activó' : 'Desactivó'}* ${isAll ? 'para este bot' : isUser ? '' : 'para este chat'}
+✅ *${type.toUpperCase()}* *${isEnable ? `${mssg.nable}` : `${mssg.disable}`}* ${isAll ? `${mssg.toBot}` : isUser ? '' : `${mssg.toGp}`}
 `.trim()) 
 
 }
