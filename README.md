@@ -7,9 +7,9 @@
 <p/>
 <p align="center">
 <a href="https://github.com/FG98F?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/FG98F?label=Followers&style=social"></a>
-<a href="https://github.com/FG98F/senna-bot/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/FG98F/senna-bot?&style=social"></a>
-<a href="https://github.com/FG98F/senna-bot/network/members"><img title="Fork" src="https://img.shields.io/github/forks/FG98F/senna-bot?style=social"></a>
-<a href="https://github.com/FG98F/senna-bot/watchers"><img title="Watching" src="https://img.shields.io/github/watchers/FG98F/senna-bot?label=Watching&style=social"></a>
+<a href="https://github.com/FG98F/dylux-bot/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/FG98F/dylux-bot?&style=social"></a>
+<a href="https://github.com/FG98F/dylux-bot/network/members"><img title="Fork" src="https://img.shields.io/github/forks/FG98F/dylux-bot?style=social"></a>
+<a href="https://github.com/FG98F/dylux-bot/watchers"><img title="Watching" src="https://img.shields.io/github/watchers/FG98F/dylux-bot?label=Watching&style=social"></a>
 </p>
 
 
@@ -18,8 +18,8 @@
 
 ***
 ### Información
-- Cambie número de dueño en [Config](https://github.com/FG98F/senna-bot/blob/main/config.js#L6)
-- Puede cambiar a la última versión de baileys editando el package.json [esta sección](https://github.com/FG98F/senna-bot/blob/main/package.json#L42)
+- Cambie número de dueño en [Config](https://github.com/FG98F/dylux-bot/blob/main/config.js#L6)
+- Puede cambiar a la última versión de baileys editando el package.json [esta sección](https://github.com/FG98F/dylux-bot/blob/main/package.json#L42)
 
 ### FREE APIKEY
 -  [click aquí](https://api.fgmods.xyz)
@@ -42,7 +42,7 @@ Multi-idioma para cada usuario, lo que significa que el usuario puede elegir el 
 ***
 
 #### Deploy to Heroku
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/FG98F/senna-bot)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/FG98F/dylux-bot)
 
 #### Heroku Buildpack
 | BuildPack | LINK |
@@ -58,8 +58,8 @@ $ pkg install git -y
 $ pkg install nodejs -y
 $ pkg install ffmpeg -y
 $ pkg install imagemagick -y
-$ git clone https://github.com/FG98F/senna-bot
-$ cd senna-bot
+$ git clone https://github.com/FG98F/dylux-bot
+$ cd dylux-bot
 $ npm i 
 $ npm start
 ```
