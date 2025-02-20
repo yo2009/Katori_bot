@@ -1,5 +1,4 @@
 
-
 import fetch from 'node-fetch'
 let handler= async (m, { conn, args, text, usedPrefix, command }) => {
 	
@@ -9,16 +8,16 @@ let handler= async (m, { conn, args, text, usedPrefix, command }) => {
     let res = await pon.json()
     let te = `
 ┌──「 *STALKING* 
-▢ *🔖${mssg.name}:* ${res.result.fullName} 
+▢ *🔖${mssg.name}:* ${res.result.name} 
 ▢ *🔖${mssg.username}:* ${res.result.username}
 ▢ *👥${mssg.followers}:* ${res.result.followers}
 ▢ *🫂${mssg.follows}:* ${res.result.following}
-▢ *📌${mssg.bio}:* ${res.result.bio}
-▢ *🏝️${mssg.posts}:* ${res.result.postsCount}
+▢ *📌${mssg.bio}:* ${res.result.description}
+▢ *🏝️${mssg.posts}:* ${res.result.posts}
 ▢ *🔗${mssg.link}:* https://instagram.com/${res.result.username.replace(/^@/, '')}
 └────────────`
 
-     await conn.sendFile(m.chat, res.result.photoUrl, 'tt.png', te, m)
+     await conn.sendFile(m.chat, res.result.profile, 'igstalk.png', te, m)
     } catch {
         m.reply(`✳️ ${mssg.error}`)
       }
