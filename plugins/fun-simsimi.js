@@ -13,7 +13,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     body: `text=${encodeURIComponent(text)}&lc=${lang}&key=`
   })
   let json = await res.json()
-  m.reply(json.message.replace('simsimi', `${botName}`).replace('Simsimi', `${botName}`).replace('sim simi', `${botName}`))
+  m.reply(json.message.replace('simsimi', `${botName}`).replace('Simsimi', `${botName}`).replace('sim simi', `${botName}`), null, fwc )
 } catch {
   m.reply(`❎ Intenta de nuevo mas tarde La api de SimSimi se cayo`)
 }
