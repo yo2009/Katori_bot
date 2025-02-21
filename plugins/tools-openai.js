@@ -1,18 +1,16 @@
-
 import fetch from 'node-fetch'
-let handler = async (m, { conn, text }) => {	
+let handler = async (m, { conn, text }) => {
 if (!text) throw `✳️ ${mssg.notext}`
 m.react('💬')
 
  let syst = `Eres Senna Bot, un gran modelo de lenguaje entrenado por OpenAI. Siga cuidadosamente las instrucciones del usuario. Responde usando Markdown.`
-	try {
-		let gpt = await fetch(global.API('fgmods', '/api/info/openai', { prompt: syst, text }, 'apikey'))
+     try {
+        let gpt = await fetch(`https://mahiru-shiina.boxmine.xyz/docs/ai/myprompt?text=${text}&prompt=${syst}`)
         let res = await gpt.json()
-        await m.reply(res.result, null, fwc)
+        await m.reply(res.answer, null, fwc)
 	} catch {
-		m.reply(`❎ Error: intenta más tarde`)
-	}
-
+        m.reply(`❎ Error: intenta más tarde`)
+     }
 }
 handler.help = ['ai <text>']
 handler.tags = ['tools']
