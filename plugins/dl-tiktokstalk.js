@@ -3,10 +3,10 @@ import axios from 'axios'
 let handler = async (m, { conn, text, args }) => {	
  if (!text) throw `✳️ ${mssg.noUsername}`  
  try {  	
-  let pon = await axios.get(`https://mahiru-shiina.boxmine.xyz/stalk/ttstalk?username=${text}`)
+  let pon = await axios.get(`https://skynex.boxmine.xyz/docs/stalk/tiktok?username=${text}&apikey=Dylux`)
   let res = await pon.data;
     
-  let txt = `
+let txt = `
 ┌──「 *TIKTOK STALK* 
 ▢ *🔖${mssg.name}:* ${res.data.nickname}
 ▢ *🔖${mssg.username}:* ${res.data.username}
