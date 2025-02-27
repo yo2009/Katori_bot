@@ -9,7 +9,7 @@ if (!args[0]) throw `✳️ ${mssg.noLink('Facebook')}\n\n📌 ${mssg.example} :
     let res = await fetch(global.API('fgmods', '/api/downloader/fbdl', { url: args[0] }, 'apikey'))
     let data = await res.json()
     
-    conn.sendFile(m.chat, data.result.sd, 'fb.mp4', `✅ ${mssg.result}`, m)
+    conn.sendFile(m.chat, data.result.dl_url, 'fb.mp4', `✅ ${mssg.result}`, m)
     m.react(done)
   } catch (error) {
     m.reply(mssg.error)
