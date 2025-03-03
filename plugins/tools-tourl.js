@@ -1,6 +1,6 @@
+
 import uploadFile from '../lib/uploadFile.js'
 import uploadImage from '../lib/uploadImage.js'
-
 let handler = async (m) => {
   let q = m.quoted ? m.quoted : m
   let mime = (q.msg || q).mimetype || ''
@@ -8,7 +8,7 @@ let handler = async (m) => {
   let media = await q.download()
   let isTele = /image\/(png|jpe?g|gif)|video\/mp4/.test(mime)
   let link = await (isTele ? uploadImage : uploadFile)(media)
-  m.reply(`▢ ${media.length} Byte(s) 
+  m.reply(`▢ *${mssg.size}:* ${(media.length / (1024 * 1024)).toFixed(2)} MB
 
 ▢ ${isTele ? '(Sin fecha de caducidad)' : '(Desconocido)'} 
 ▢ *URL :* ${link}
