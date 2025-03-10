@@ -1,78 +1,62 @@
-import { cpus as _cpus, totalmem, freemem } from 'os'
-import util from 'util'
-import { performance } from 'perf_hooks'
-import { sizeFormatter } from 'human-readable'
-let format = sizeFormatter({
-  std: 'JEDEC', // 'SI' (default) | 'IEC' | 'JEDEC'
-  decimalPlaces: 2,
-  keepTrailingZeroes: false,
-  render: (literal, symbol) => `${literal} ${symbol}B`,
-})
+
+import speed from 'performance-now'
 let handler = async (m, { conn, usedPrefix, command }) => {
-  const chats = Object.entries(conn.chats).filter(([id, data]) => id && data.isChats)
-  const groupsIn = chats.filter(([id]) => id.endsWith('@g.us')) //groups.filter(v => !v.read_only)
-  const used = process.memoryUsage()
-  const cpus = _cpus().map(cpu => {
-    cpu.total = Object.keys(cpu.times).reduce((last, type) => last + cpu.times[type], 0)
-    return cpu
-  })
-  const cpu = cpus.reduce((last, cpu, _, { length }) => {
-    last.total += cpu.total
-    last.speed += cpu.speed / length
-    last.times.user += cpu.times.user
-    last.times.nice += cpu.times.nice
-    last.times.sys += cpu.times.sys
-    last.times.idle += cpu.times.idle
-    last.times.irq += cpu.times.irq
-    return last
-  }, {
-    speed: 0,
-    total: 0,
-    times: {
-      user: 0,
-      nice: 0,
-      sys: 0,
-      idle: 0,
-      irq: 0
-    }
-  })
-  let old = performance.now()
-  
-  let neww = performance.now()
-  let speed = neww - old
-  
-let infobt = `
-≡ *INFO BOT*
-  
-*ESTADO*
-▢ ${mssg.gp}s: *${groupsIn.length}*
-▢ Chats: *${chats.length - groupsIn.length}*
-▢ Total Chats: *${chats.length}*
+    let start = speed()
+    let uptime = await getUptime()
+    let end = speed()
+    let latency = (end - start).toFixed(4)
+
+    let cmds = Object.values(global.plugins).filter((v) => v.help && v.tags).length
+    let totalreg = Object.keys(global.db.data.users)
+    let rtotalreg = Object.values(global.db.data.users).filter(user => user.registered == true)
+
+    let message = `
+ ≡ *ESTADO*
+- *Ping:* ${latency} _ms_
+- *Uptime:* ${uptime}
+- *Comandos:* ${cmds} 
+
+*≡ USUARIOS DEL BOT*
+- *Total:* ${totalreg.length.toLocaleString()}
+- *Registrados:* ${rtotalreg.length.toLocaleString()} 
 
 *≡ OWNER*
   *FG98*
-▢ Instagram :
-  • ${fgig}
-▢ Telegram : 
-  • t.me/fgsupp_bot (FG) 
-  • t.me/fg98ff (canal)
-  • t.me/fgawgp (grupo)
-▢ YouTube : 
-  • https://youtube.com/fg98f
-  
- *≡ HELPERS*
-  *ANDREA*
-▢ WhatsApp : wa.me/573125484672`
+▢ *Instagram :*
+- ${fgig}
+▢ *Telegram :*
+- t.me/fgsupp_bot (FG) 
+- t.me/fg98ff (canal)
+- t.me/fgawgp (grupo)
+▢ *YouTube :*
+- https://youtube.com/fg98f`
 
-/*conn.sendButton(m.chat, infobt, mssg.ig, null, [
-  ['ꨄ︎ Apoyar', `${usedPrefix}donate`],
-   ['⌬ Grupos', `${usedPrefix}gpdylux`]
- ], m)*/
- m.reply(infobt)
-
+    m.reply(message, null, fwc)
 }
 handler.help = ['info']
 handler.tags = ['main']
 handler.command = ['info', 'infobot', 'botinfo']
 
 export default handler
+
+// - - 
+async function getUptime() {
+    if (process.send) {
+        process.send('uptime')
+        let _muptime = await new Promise(resolve => {
+            process.once('message', resolve)
+            setTimeout(() => resolve(0), 1000)
+        });
+        return formatUptime(_muptime * 1000)
+    }
+    return formatUptime(0)
+}
+
+// - - 
+function formatUptime(ms) {
+    let d = Math.floor(ms / 86400000)
+    let h = Math.floor(ms / 3600000) % 24
+    let m = Math.floor(ms / 60000) % 60
+    let s = Math.floor(ms / 1000) % 60
+    return `${d}d ${h}h ${m}m ${s}s`
+}
