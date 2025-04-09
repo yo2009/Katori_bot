@@ -18,7 +18,7 @@ global.APIs = { // API Prefix
 }
 global.APIKeys = { // APIKey Here
   // 'https://website': 'apikey'
-  'https://api.fgmods.xyz': 'm2XBbNvzn' //--- 100 de límite diario --- Regístrese en https://api.fgmods.xyz/
+  'https://api.fgmods.xyz': 'fg_9XdnzCdQ' //--- 100 de límite diario --- Regístrese en https://api.fgmods.xyz/
 }
 
 // Sticker WM
